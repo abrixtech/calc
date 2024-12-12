@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora Financiera</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-width: 450px; /* Ampliamos el ancho general */
+            margin: auto;
+        }
+        .input-group, .result-group-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .input-group label, .result-group-item label {
+            flex: 1;
+            white-space: nowrap; /* Prevenir el salto de línea en etiquetas */
+        }
+        .input-group input, .result-group-item span {
+            flex: 1;
+            text-align: right;
+            padding: 5px;
+            margin-left: 10px;
+        }
+        .input-group input {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+        }
+        .result-group {
+            background-color: #f9f9f9;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        hr {
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Calculadora Financiera</h1>
+        
+        <!-- Bloque 1: Campos Editables -->
+        <div>
+            <div class="input-group">
+                <label for="age">Edad actual:</label>
+                <input type="number" id="age" min="1" max="99" value="30">
+            </div>
+            <div class="input-group">
+                <label for="investment">Inversión (€):</label>
+                <input type="number" id="investment" min="1" max="100000000" value="100000">
+            </div>
+            <div class="input-group">
+                <label for="returnRate">Rendimiento (%):</label>
+                <input type="number" id="returnRate" min="0.00" max="20.00" step="0.01" value="5.00">
+            </div>
+            <div class="input-group">
+                <label for="monthlyExpense">Gasto mensual (€):</label>
+                <input type="number" id="monthlyExpense" min="1" max="10000" value="2000">
+            </div>
+        </div>
+
+        <!-- Bloque 2: Resultados Calculados -->
+        <div class="result-group">
+            <div class="result-group-item">
+                <label>Esperanza de vida:</label>
+                <span id="lifeExpectancy">90</span>
+            </div>
+            <div class="result-group-item">
+                <label>Rendimiento anual (€):</label>
+                <span id="annualReturn">0</span>
+            </div>
+            <div class="result-group-item">
+                <label>Rendimiento mensual (€):</label>
+                <span id="monthlyReturn">0</span>
+            </div>
+            <div class="result-group-item">
+                <label>Diferencia mensual (rendimiento - gastos):</label>
+                <span id="difference">0</span>
+            </div>
+        </div>
+
+        <hr>
+
+        <!-- Bloque 3: Patrimonio -->
+        <div class="result-group">
+            <div class="result-group-item">
+                <label>Patrimonio a los <span id="patrimonioAge">90</span> años (€):</label>
+                <span id="finalWealth">0</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Obtener referencias a los elementos del DOM
+        const ageInput = document.getElementById("age");
+        const investmentInput = document.getElementById("investment");
+        const returnRateInput = document.getElementById("returnRate");
+        const monthlyExpenseInput = document.getElementById("monthlyExpense");
+
+        const annualReturnSpan = document.getElementById("annualReturn");
+        const monthlyReturnSpan = document.getElementById("monthlyReturn");
+        const differenceSpan = document.getElementById("difference");
+        const finalWealthSpan = document.getElementById("finalWealth");
+
+        const lifeExpectancy = 90;
+
+        function updateCalculations() {
+            // Obtener valores de los inputs
+            const age = parseInt(ageInput.value, 10);
+            const investment = parseFloat(investmentInput.value);
+            const returnRate = parseFloat(returnRateInput.value) / 100; // Convertir a decimal
+            const monthlyExpense = parseFloat(monthlyExpenseInput.value);
+
+            // Calcular rendimientos
+            const annualReturn = investment * returnRate;
+            const monthlyReturn = annualReturn / 12;
+            const difference = monthlyReturn - monthlyExpense;
+
+            // Calcular patrimonio a los 90 años
+            const monthsRemaining = (lifeExpectancy - age) * 12;
+            const finalWealth = investment + (difference * monthsRemaining);
+
+            // Actualizar el DOM con los resultados
+            annualReturnSpan.textContent = annualReturn.toFixed(2);
+            monthlyReturnSpan.textContent = monthlyReturn.toFixed(2);
+            differenceSpan.textContent = difference.toFixed(2);
+            finalWealthSpan.textContent = finalWealth.toFixed(2);
+        }
+
+        // Actualizar cálculos al cambiar los valores de los inputs
+        ageInput.addEventListener("input", updateCalculations);
+        investmentInput.addEventListener("input", updateCalculations);
+        returnRateInput.addEventListener("input", updateCalculations);
+        monthlyExpenseInput.addEventListener("input", updateCalculations);
+
+        // Calcular valores iniciales
+        updateCalculations();
+    </script>
+</body>
+</html>
