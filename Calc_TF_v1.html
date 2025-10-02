@@ -13,7 +13,7 @@
             display: flex;
             flex-direction: column;
             gap: 20px;
-            max-width: 450px; /* Ampliamos el ancho general */
+            max-width: 450px;
             margin: auto;
         }
         .input-group, .result-group-item {
@@ -23,7 +23,7 @@
         }
         .input-group label, .result-group-item label {
             flex: 1;
-            white-space: nowrap; /* Prevenir el salto de línea en etiquetas */
+            white-space: nowrap;
         }
         .input-group input, .result-group-item span {
             flex: 1;
@@ -45,108 +45,218 @@
         hr {
             margin: 20px 0;
         }
+        .sustainability-result {
+            font-weight: bold;
+            color: #007bff; /* Color para destacar el resultado clave */
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Calculadora Financiera</h1>
-        
-        <!-- Bloque 1: Campos Editables -->
+
         <div>
             <div class="input-group">
                 <label for="age">Edad actual:</label>
                 <input type="number" id="age" min="1" max="99" value="30">
             </div>
+            
             <div class="input-group">
-                <label for="investment">Inversión (€):</label>
-                <input type="number" id="investment" min="1" max="100000000" value="100000">
+                <label for="timeHorizon">Horizonte temporal (años):</label>
+                <input type="number" id="timeHorizon" min="1" max="120" value="80">
+            </div>
+
+            <div class="input-group">
+                <label for="investment">Patrimonio invertido (€):</label>
+                <input type="number" id="investment" min="1" max="100000000" value="300000">
             </div>
             <div class="input-group">
-                <label for="returnRate">Rendimiento (%):</label>
+                <label for="returnRate">Rendimiento anual (%):</label>
                 <input type="number" id="returnRate" min="0.00" max="20.00" step="0.01" value="5.00">
             </div>
             <div class="input-group">
-                <label for="monthlyExpense">Gasto mensual (€):</label>
-                <input type="number" id="monthlyExpense" min="1" max="10000" value="2000">
+                <label for="inflationRate">Inflación anual (%):</label>
+                <input type="number" id="inflationRate" min="0.00" max="10.00" step="0.01" value="3.00">
+            </div>
+            <div class="input-group">
+                <label for="monthlyExpense">Gasto mensual inicial (€):</label>
+                <input type="number" id="monthlyExpense" min="1" max="10000" value="1500">
             </div>
         </div>
 
-        <!-- Bloque 2: Resultados Calculados -->
         <div class="result-group">
             <div class="result-group-item">
-                <label>Esperanza de vida:</label>
-                <span id="lifeExpectancy">90</span>
-            </div>
-            <div class="result-group-item">
-                <label>Rendimiento anual (€):</label>
+                <label>Rendimiento anual del patrimonio inicial (€):</label>
                 <span id="annualReturn">0</span>
             </div>
             <div class="result-group-item">
-                <label>Rendimiento mensual (€):</label>
-                <span id="monthlyReturn">0</span>
+                <label>Gasto anual inicial (€):</label>
+                <span id="initialAnnualExpense">0</span>
+            </div>
+            <hr style="width: 100%; border-top: 1px solid #ccc;">
+            <div class="result-group-item">
+                <label>Tasa de Consumo Inicial (%):</label>
+                <span id="initialWithdrawalRate" class="sustainability-result">0%</span>
             </div>
             <div class="result-group-item">
-                <label>Diferencia mensual (rendimiento - gastos):</label>
-                <span id="difference">0</span>
+                <label>Años de Sostenibilidad (con inflación):</label>
+                <span id="yearsOfSustainability" class="sustainability-result">0</span>
             </div>
         </div>
 
         <hr>
 
-        <!-- Bloque 3: Patrimonio -->
         <div class="result-group">
             <div class="result-group-item">
-                <label>Patrimonio a los <span id="patrimonioAge">90</span> años (€):</label>
+                <label>Patrimonio al alcanzar los <span id="patrimonioAgeDisplay">80</span> años (€):</label>
                 <span id="finalWealth">0</span>
             </div>
         </div>
     </div>
-
     <script>
+        // Función de formato de moneda (estilo español)
+        function formatCurrency(value) {
+            if (isNaN(value)) value = 0;
+            return new Intl.NumberFormat('es-ES', {
+                style: 'currency',
+                currency: 'EUR',
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+            }).format(value);
+        }
+        
         // Obtener referencias a los elementos del DOM
         const ageInput = document.getElementById("age");
+        const timeHorizonInput = document.getElementById("timeHorizon");
         const investmentInput = document.getElementById("investment");
         const returnRateInput = document.getElementById("returnRate");
+        const inflationRateInput = document.getElementById("inflationRate");
         const monthlyExpenseInput = document.getElementById("monthlyExpense");
 
         const annualReturnSpan = document.getElementById("annualReturn");
-        const monthlyReturnSpan = document.getElementById("monthlyReturn");
-        const differenceSpan = document.getElementById("difference");
+        const initialAnnualExpenseSpan = document.getElementById("initialAnnualExpense");
+        const initialWithdrawalRateSpan = document.getElementById("initialWithdrawalRate");
+        const yearsOfSustainabilitySpan = document.getElementById("yearsOfSustainability");
         const finalWealthSpan = document.getElementById("finalWealth");
-
-        const lifeExpectancy = 90;
+        const patrimonioAgeDisplay = document.getElementById("patrimonioAgeDisplay");
 
         function updateCalculations() {
-            // Obtener valores de los inputs
-            const age = parseInt(ageInput.value, 10);
-            const investment = parseFloat(investmentInput.value);
-            const returnRate = parseFloat(returnRateInput.value) / 100; // Convertir a decimal
-            const monthlyExpense = parseFloat(monthlyExpenseInput.value);
+            // --- 1. OBTENER Y VALIDAR VALORES ---
+            const age = parseFloat(ageInput.value) || 0;
+            const timeHorizon = parseFloat(timeHorizonInput.value) || 0;
+            const initialWealth = parseFloat(investmentInput.value) || 0; 
+            const returnRate = (parseFloat(returnRateInput.value) / 100) || 0;
+            const inflationRate = (parseFloat(inflationRateInput.value) / 100) || 0;
+            const monthlyExpense = parseFloat(monthlyExpenseInput.value) || 0;
+            const initialAnnualExpense = monthlyExpense * 12;
 
-            // Calcular rendimientos
-            const annualReturn = investment * returnRate;
-            const monthlyReturn = annualReturn / 12;
-            const difference = monthlyReturn - monthlyExpense;
+            // --- 2. GESTIONAR CASOS SIN DATOS VÁLIDOS ---
+            if (initialWealth <= 0 || age <= 0 || timeHorizon <= age || monthlyExpense <= 0) {
+                annualReturnSpan.textContent = formatCurrency(0);
+                initialAnnualExpenseSpan.textContent = formatCurrency(0);
+                initialWithdrawalRateSpan.textContent = "0.00 %";
+                yearsOfSustainabilitySpan.textContent = "0 años";
+                finalWealthSpan.textContent = formatCurrency(initialWealth); 
+                patrimonioAgeDisplay.textContent = timeHorizon;
+                return;
+            }
 
-            // Calcular patrimonio a los 90 años
-            const monthsRemaining = (lifeExpectancy - age) * 12;
-            const finalWealth = investment + (difference * monthsRemaining);
+            // --- 3. CÁLCULOS ESTÁTICOS INICIALES ---
 
-            // Actualizar el DOM con los resultados
-            annualReturnSpan.textContent = annualReturn.toFixed(2);
-            monthlyReturnSpan.textContent = monthlyReturn.toFixed(2);
-            differenceSpan.textContent = difference.toFixed(2);
-            finalWealthSpan.textContent = finalWealth.toFixed(2);
+            // Tasa de Consumo Inicial
+            const initialWithdrawalRate = (initialAnnualExpense / initialWealth) * 100;
+            
+            // Rendimiento Anual
+            const annualReturnInitial = initialWealth * returnRate;
+
+            // --- 4. CÁLCULO DE LA SOSTENIBILIDAD (AÑOS HASTA CERO) ---
+            
+            let simulationWealth = initialWealth;
+            let currentAnnualExpense = initialAnnualExpense;
+            let sustainabilityYears = 0;
+            const maxYears = 150; 
+            
+            // Si el rendimiento supera la inflación Y el retiro inicial es razonable, asumimos infinito.
+            if (returnRate > inflationRate && initialWithdrawalRate < 4) {
+                 sustainabilityYears = Infinity;
+            } else {
+                 for (let i = 0; i < maxYears; i++) {
+                    // Crecimiento anual del capital
+                    simulationWealth *= (1 + returnRate);
+                    
+                    // Retiro anual (gasto)
+                    simulationWealth -= currentAnnualExpense;
+                    
+                    // El gasto aumenta por la inflación para el año siguiente
+                    currentAnnualExpense *= (1 + inflationRate);
+                    
+                    if (simulationWealth <= 0) {
+                        // Interpolación para estimar meses dentro del año
+                        sustainabilityYears = i + Math.abs(simulationWealth) / (currentAnnualExpense / (1 + inflationRate) - simulationWealth);
+                        break;
+                    }
+                    if (i === maxYears - 1) {
+                        sustainabilityYears = Infinity; 
+                    }
+                }
+            }
+
+            // --- 5. CÁLCULO DEL PATRIMONIO AL HORIZONTE TEMPORAL (PERMITE NEGATIVO) ---
+            
+            let finalWealthProjection = initialWealth;
+            const yearsToHorizon = timeHorizon - age;
+            let currentAnnualExpenseProjection = initialAnnualExpense;
+
+            if (yearsToHorizon > 0) {
+                for (let i = 0; i < yearsToHorizon; i++) {
+                    // Crecimiento anual del capital
+                    finalWealthProjection *= (1 + returnRate);
+                    
+                    // Retiro anual (gasto)
+                    finalWealthProjection -= currentAnnualExpenseProjection;
+                    
+                    // El gasto aumenta por la inflación para el año siguiente
+                    currentAnnualExpenseProjection *= (1 + inflationRate);
+                }
+            } else {
+                finalWealthProjection = initialWealth;
+            }
+
+            // --- 6. ACTUALIZAR EL DOM CON LOS RESULTADOS ---
+            
+            // Valores Monetarios
+            annualReturnSpan.textContent = formatCurrency(annualReturnInitial);
+            initialAnnualExpenseSpan.textContent = formatCurrency(initialAnnualExpense);
+            
+            // Este campo ahora muestra el déficit como un valor negativo.
+            finalWealthSpan.textContent = formatCurrency(finalWealthProjection); 
+            
+            // Tasa de Consumo
+            initialWithdrawalRateSpan.textContent = initialWithdrawalRate.toFixed(2) + ' %';
+            
+            // Años de Sostenibilidad
+            if (sustainabilityYears === Infinity) {
+                yearsOfSustainabilitySpan.textContent = "Infinito (crece)";
+            } else {
+                 yearsOfSustainabilitySpan.textContent = Math.max(0, sustainabilityYears).toFixed(1) + ' años';
+            }
+            
+            // Etiqueta del patrimonio final
+            patrimonioAgeDisplay.textContent = timeHorizon;
         }
 
-        // Actualizar cálculos al cambiar los valores de los inputs
+        // Event Listeners y llamada inicial
         ageInput.addEventListener("input", updateCalculations);
+        timeHorizonInput.addEventListener("input", updateCalculations);
         investmentInput.addEventListener("input", updateCalculations);
         returnRateInput.addEventListener("input", updateCalculations);
+        inflationRateInput.addEventListener("input", updateCalculations);
         monthlyExpenseInput.addEventListener("input", updateCalculations);
 
-        // Calcular valores iniciales
-        updateCalculations();
+        // Llamada crítica para la inicialización:
+        // Asegura que updateCalculations() se ejecuta después de que el DOM esté completamente cargado
+        document.addEventListener("DOMContentLoaded", updateCalculations);
+        window.onload = updateCalculations; // Fallback para mayor compatibilidad
     </script>
 </body>
 </html>
