@@ -6,7 +6,7 @@ Una herramienta web interactiva para planificar la sostenibilidad financiera a l
 
 ## Demo
 
-Abre el archivo `Calc_TF_v4.html` directamente en cualquier navegador moderno. No requiere servidor, instalación ni dependencias locales.
+Abre el archivo `Calc_TF_v1,2.html` directamente en cualquier navegador moderno. No requiere servidor, instalación ni dependencias locales.
 
 > Requiere conexión a internet para cargar Chart.js desde CDN. Ver sección [Uso offline](#uso-offline) para una alternativa sin conexión.
 
