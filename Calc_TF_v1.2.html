@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora Financiera</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 13px;
+            color: #222;
+            background: #f2f2f0;
+            padding: 20px 24px;
+        }
+
+        h1 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: 360px minmax(0, 1fr);
+            gap: 20px;
+            max-width: 1300px;
+            margin: auto;
+            align-items: start;
+        }
+
+        @media (max-width: 860px) {
+            .layout { grid-template-columns: 1fr; }
+        }
+
+        /* ── CALCULADORA ── */
+        .calc { display: flex; flex-direction: column; gap: 10px; }
+
+        .sec {
+            background: #fff;
+            border: 1px solid #e2e2e0;
+            border-radius: 10px;
+            padding: 11px 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .sec-title {
+            font-size: 10px;
+            font-weight: 700;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            margin-bottom: 1px;
+        }
+
+        .row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .row label {
+            flex: 1;
+            font-size: 12px;
+            color: #555;
+            line-height: 1.35;
+        }
+
+        .row input {
+            width: 120px;
+            text-align: right;
+            font-size: 12px;
+            padding: 4px 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background: #fafafa;
+            color: #222;
+        }
+
+        .row input:focus {
+            outline: none;
+            border-color: #aaa;
+        }
+
+        .val {
+            font-size: 12px;
+            font-weight: 600;
+            text-align: right;
+            min-width: 120px;
+            color: #222;
+        }
+
+        .val.hi { color: #185FA5; }
+
+        .divider {
+            border: none;
+            border-top: 1px solid #eee;
+            margin: 1px 0;
+        }
+
+        .badge-inf {
+            display: inline-block;
+            background: #e6f4ea;
+            color: #2d7a3a;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 1px 9px;
+            border-radius: 5px;
+        }
+
+        .linked-lbl {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .link-icon { font-size: 10px; color: #bbb; }
+
+        /* ── PANEL DERECHO ── */
+        .right { display: flex; flex-direction: column; gap: 12px; }
+
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+        }
+
+        @media (max-width: 600px) {
+            .metrics { grid-template-columns: 1fr 1fr; }
+        }
+
+        .metric {
+            background: #fff;
+            border: 1px solid #e2e2e0;
+            border-radius: 8px;
+            padding: 10px 12px;
+        }
+
+        .metric .mlabel {
+            font-size: 10px;
+            color: #888;
+            margin-bottom: 4px;
+        }
+
+        .metric .mval {
+            font-size: 18px;
+            font-weight: 700;
+            color: #222;
+        }
+
+        .metric .mval.good { color: #0F6E56; }
+        .metric .mval.bad  { color: #A32D2D; }
+
+        .card {
+            background: #fff;
+            border: 1px solid #e2e2e0;
+            border-radius: 10px;
+            padding: 12px 14px;
+        }
+
+        .card-title {
+            font-size: 10px;
+            font-weight: 700;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            margin-bottom: 9px;
+        }
+
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 7px;
+        }
+
+        .leg-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 11px;
+            color: #666;
+        }
+
+        .leg-sq {
+            width: 9px;
+            height: 9px;
+            border-radius: 2px;
+            flex-shrink: 0;
+        }
+
+        .bottom-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        @media (max-width: 600px) {
+            .bottom-row { grid-template-columns: 1fr; }
+        }
+
+        .insight-text {
+            font-size: 12px;
+            color: #555;
+            line-height: 1.65;
+        }
+
+        .insight-text strong {
+            font-weight: 600;
+            color: #222;
+        }
+
+        .phase-list {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        .phase {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            font-size: 12px;
+            color: #555;
+            line-height: 1.5;
+        }
+
+        .phase-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            margin-top: 4px;
+        }
+
+        .dot-red    { background: #E24B4A; }
+        .dot-amber  { background: #EF9F27; }
+        .dot-green  { background: #639922; }
+        .dot-blue   { background: #378ADD; }
+    </style>
+</head>
+<body>
+
+<div class="layout">
+
+    <!-- ══════════════════ CALCULADORA ══════════════════ -->
+    <div class="calc">
+        <h1>Calculadora financiera</h1>
+
+        <div class="sec">
+            <div class="sec-title">Datos personales</div>
+            <div class="row">
+                <label>Edad actual</label>
+                <input type="number" id="age" min="1" max="99" value="40">
+            </div>
+            <div class="row">
+                <label>Edad de retiro</label>
+                <input type="number" id="retireAge" min="1" max="99" value="60">
+            </div>
+            <div class="row">
+                <label>Horizonte temporal (años de vida)</label>
+                <input type="number" id="timeHorizon" min="1" max="120" value="90">
+            </div>
+        </div>
+
+        <div class="sec">
+            <div class="sec-title">Patrimonio e inversión</div>
+            <div class="row">
+                <label>Patrimonio invertido (€)</label>
+                <input type="number" id="investment" min="0" max="100000000" value="200000">
+            </div>
+            <div class="row">
+                <label>Rendimiento anual (%)</label>
+                <input type="number" id="returnRate" min="0" max="20" step="0.01" value="5.00">
+            </div>
+            <div class="row">
+                <label>Inflación anual (%)</label>
+                <input type="number" id="inflationRate" min="0" max="10" step="0.01" value="3.00">
+            </div>
+        </div>
+
+        <div class="sec">
+            <div class="sec-title">Ingresos y gastos</div>
+            <div class="row">
+                <label>Salario mensual actual (€)</label>
+                <input type="number" id="salary" min="0" max="100000" step="100" value="2000">
+            </div>
+            <div class="row">
+                <label>Gasto mensual (€)</label>
+                <input type="number" id="monthlyExpense" min="1" max="100000" step="10" value="1500">
+            </div>
+            <div class="row">
+                <label>
+                    <span class="linked-lbl">Tasa de retiro anual (%) <span class="link-icon">⇄</span></span>
+                </label>
+                <input type="number" id="withdrawalRate" min="0" max="100" step="0.01" value="9.00">
+            </div>
+            <div class="row">
+                <label>Pensión pública mensual (€)</label>
+                <input type="number" id="pension" min="0" max="4000" step="100" value="1000">
+            </div>
+        </div>
+
+        <div class="sec">
+            <div class="sec-title">Resultados</div>
+            <div class="row">
+                <label>Rendimiento anual del patrimonio (€)</label>
+                <span class="val" id="annualReturn">—</span>
+            </div>
+            <div class="row">
+                <label>Gasto anual (€)</label>
+                <span class="val" id="initialAnnualExpense">—</span>
+            </div>
+            <div class="row">
+                <label>Ahorro/déficit anual antes del retiro (€)</label>
+                <span class="val" id="annualSavings">—</span>
+            </div>
+            <div class="row">
+                <label>Pensión anual desde los 67 (€)</label>
+                <span class="val" id="pensionAnnual">—</span>
+            </div>
+            <hr class="divider">
+            <div class="row">
+                <label>Tasa de consumo sobre patrimonio (%)</label>
+                <span class="val hi" id="initialWithdrawalRateDisplay">—</span>
+            </div>
+            <div class="row">
+                <label>Años de sostenibilidad (desde retiro)</label>
+                <span class="val hi" id="yearsOfSustainability">—</span>
+            </div>
+            <div class="row">
+                <label>Patrimonio a los <span id="patrimonioAgeDisplay">90</span> años (€)</label>
+                <span class="val" id="finalWealth">—</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════════════ PANEL DERECHO ══════════════════ -->
+    <div class="right">
+
+        <div class="metrics">
+            <div class="metric">
+                <div class="mlabel">Duración estimada</div>
+                <div class="mval" id="m-years">—</div>
+            </div>
+            <div class="metric">
+                <div class="mlabel">Patrimonio al retiro</div>
+                <div class="mval" id="m-retire">—</div>
+            </div>
+            <div class="metric">
+                <div class="mlabel">Saldo final</div>
+                <div class="mval" id="m-final">—</div>
+            </div>
+            <div class="metric">
+                <div class="mlabel">Edad crítica</div>
+                <div class="mval" id="m-age0">—</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="legend">
+                <span class="leg-item"><span class="leg-sq" style="background:#378ADD"></span>Patrimonio</span>
+                <span class="leg-item"><span class="leg-sq" style="background:#639922"></span>Inicio retiro</span>
+                <span class="leg-item"><span class="leg-sq" style="background:#1D9E75"></span>Inicio pensión (67)</span>
+            </div>
+            <div style="position: relative; width: 100%; height: 240px;">
+                <canvas id="wealthChart" role="img" aria-label="Evolución anual del patrimonio por fases de vida: laboral, retiro y pensión">
+                    Gráfico de evolución patrimonial por edades.
+                </canvas>
+            </div>
+        </div>
+
+        <div class="bottom-row">
+            <div class="card">
+                <div class="card-title">Análisis dinámico</div>
+                <div class="insight-text" id="insight-text">Introduce tus datos para ver el análisis.</div>
+            </div>
+            <div class="card">
+                <div class="card-title">Fases de tu plan</div>
+                <div class="phase-list" id="phase-list"></div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    const $ = id => document.getElementById(id);
+
+    function fmtE(v) {
+        if (isNaN(v)) v = 0;
+        return new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(v);
+    }
+    function fmtE2(v) {
+        if (isNaN(v)) v = 0;
+        return new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR', minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(v);
+    }
+
+    let chart = null;
+    let updating = false;
+
+    /* ─── SINCRONIZACIÓN TASA ⇄ GASTO ─── */
+    function syncRateFromExpense() {
+        if (updating) return;
+        updating = true;
+        const inv = parseFloat($('investment').value) || 0;
+        const exp = parseFloat($('monthlyExpense').value) || 0;
+        if (inv > 0) $('withdrawalRate').value = (((exp * 12) / inv) * 100).toFixed(2);
+        updating = false;
+        calc();
+    }
+
+    function syncExpenseFromRate() {
+        if (updating) return;
+        updating = true;
+        const inv = parseFloat($('investment').value) || 0;
+        const rate = parseFloat($('withdrawalRate').value) || 0;
+        if (inv > 0) $('monthlyExpense').value = ((inv * (rate / 100)) / 12).toFixed(2);
+        updating = false;
+        calc();
+    }
+
+    function syncRateFromInv() {
+        const inv = parseFloat($('investment').value) || 0;
+        const exp = parseFloat($('monthlyExpense').value) || 0;
+        if (inv > 0 && exp > 0) {
+            updating = true;
+            $('withdrawalRate').value = (((exp * 12) / inv) * 100).toFixed(2);
+            updating = false;
+        }
+        calc();
+    }
+
+    /* ─── CÁLCULO PRINCIPAL ─── */
+    function calc() {
+        const age            = parseFloat($('age').value) || 0;
+        const retireAge      = parseFloat($('retireAge').value) || 0;
+        const timeHorizon    = parseFloat($('timeHorizon').value) || 0;
+        const initialWealth  = parseFloat($('investment').value) || 0;
+        const returnRate     = (parseFloat($('returnRate').value) / 100) || 0;
+        const inflationRate  = (parseFloat($('inflationRate').value) / 100) || 0;
+        const monthlySalary  = parseFloat($('salary').value) || 0;
+        const monthlyExpense = parseFloat($('monthlyExpense').value) || 0;
+        const monthlyPension = parseFloat($('pension').value) || 0;
+
+        const annualSalary  = monthlySalary * 12;
+        const annualExpense = monthlyExpense * 12;
+        const annualPension = monthlyPension * 12;
+        const yearsToHorizon = timeHorizon - age;
+
+        $('patrimonioAgeDisplay').textContent = timeHorizon;
+        $('pensionAnnual').textContent = fmtE2(annualPension);
+
+        if (initialWealth < 0 || age <= 0 || timeHorizon <= age || monthlyExpense <= 0) return;
+
+        const annualReturnInitial   = initialWealth * returnRate;
+        const annualSavingsVal      = (retireAge > age)
+            ? annualSalary - annualExpense + annualReturnInitial
+            : annualReturnInitial - annualExpense;
+        const wdRatePct = (annualExpense / Math.max(1, initialWealth)) * 100;
+
+        $('annualReturn').textContent           = fmtE2(annualReturnInitial);
+        $('initialAnnualExpense').textContent   = fmtE2(annualExpense);
+        $('initialWithdrawalRateDisplay').textContent = wdRatePct.toFixed(2) + ' %';
+
+        const savEl = $('annualSavings');
+        savEl.textContent  = fmtE2(annualSavingsVal);
+        savEl.style.color  = annualSavingsVal >= 0 ? '#0F6E56' : '#A32D2D';
+
+        /* Simulación año a año */
+        const simData = [];
+        let w = initialWealth, exp = annualExpense, sal = annualSalary;
+
+        for (let i = 0; i <= yearsToHorizon; i++) {
+            const curAge = age + i;
+            simData.push({ age: curAge, wealth: w });
+            if (i < yearsToHorizon) {
+                w = w * (1 + returnRate);
+                if (curAge < retireAge) {
+                    w += sal - exp;
+                } else {
+                    const pen = curAge >= 67 ? annualPension : 0;
+                    w -= Math.max(0, exp - pen);
+                }
+                exp *= (1 + inflationRate);
+                sal *= (1 + inflationRate);
+            }
+        }
+
+        const wealthAtRetire = simData.find(d => d.age === retireAge)?.wealth ?? simData[simData.length - 1].wealth;
+        const finalW         = simData[simData.length - 1].wealth;
+
+        /* Sostenibilidad desde el retiro */
+        let sustYears = 0, ageZero = null;
+        let simW2 = wealthAtRetire;
+        let curExp2 = annualExpense * Math.pow(1 + inflationRate, Math.max(0, retireAge - age));
+        const maxY = 150;
+
+        for (let i = 0; i < maxY; i++) {
+            const curAge = retireAge + i;
+            const pen = curAge >= 67
+                ? annualPension * Math.pow(1 + inflationRate, Math.max(0, curAge - age))
+                : 0;
+            const net = Math.max(0, curExp2 - pen);
+            simW2 = simW2 * (1 + returnRate) - net;
+            curExp2 *= (1 + inflationRate);
+            if (simW2 <= 0) {
+                const prev = curExp2 / (1 + inflationRate);
+                sustYears = i + Math.abs(simW2) / (prev - simW2 + Math.abs(simW2));
+                ageZero   = Math.round(retireAge + sustYears);
+                break;
+            }
+            if (i === maxY - 1) sustYears = Infinity;
+        }
+
+        $('finalWealth').textContent = fmtE2(finalW);
+
+        if (sustYears === Infinity) {
+            $('yearsOfSustainability').innerHTML = '<span class="badge-inf">Indefinido</span>';
+        } else {
+            $('yearsOfSustainability').textContent = Math.max(0, sustYears).toFixed(1) + ' años';
+        }
+
+        /* Métricas */
+        const myEl = $('m-years');
+        if (sustYears === Infinity) { myEl.textContent = 'Ilimitado'; myEl.className = 'mval good'; }
+        else { myEl.textContent = Math.max(0, sustYears).toFixed(1) + ' años'; myEl.className = 'mval ' + ((ageZero && ageZero > timeHorizon) ? 'good' : 'bad'); }
+
+        const retEl = $('m-retire');
+        retEl.textContent = fmtE(wealthAtRetire);
+        retEl.className   = 'mval ' + (wealthAtRetire >= initialWealth ? 'good' : 'bad');
+
+        const finEl = $('m-final');
+        finEl.textContent = fmtE(finalW);
+        finEl.className   = 'mval ' + (finalW >= 0 ? 'good' : 'bad');
+
+        const a0El = $('m-age0');
+        if (ageZero) { a0El.textContent = ageZero + ' años'; a0El.className = 'mval ' + (ageZero > timeHorizon ? 'good' : 'bad'); }
+        else         { a0El.textContent = '> ' + timeHorizon + ' años'; a0El.className = 'mval good'; }
+
+        renderChart(simData, age, retireAge, timeHorizon);
+        renderInsight(age, retireAge, timeHorizon, initialWealth, annualReturnInitial, annualExpense, annualSalary, annualPension, returnRate, inflationRate, wealthAtRetire, sustYears, finalW, ageZero);
+        renderPhases(age, retireAge, timeHorizon, annualSalary, annualExpense, annualReturnInitial, annualPension, wealthAtRetire, sustYears, ageZero, inflationRate);
+    }
+
+    /* ─── GRÁFICO ─── */
+    function renderChart(data, age, retireAge, horizon) {
+        const labels = data.map(d => d.age);
+        const vals   = data.map(d => Math.round(d.wealth));
+        const ctx    = $('wealthChart').getContext('2d');
+
+        if (chart) { chart.destroy(); }
+
+        chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels,
+                datasets: [{
+                    label: 'Patrimonio',
+                    data: vals,
+                    borderColor: '#378ADD',
+                    borderWidth: 2,
+                    pointRadius: 0,
+                    pointHoverRadius: 4,
+                    fill: true,
+                    backgroundColor: 'rgba(55,138,221,0.08)',
+                    tension: 0.3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: { mode: 'index', intersect: false },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            title: c => 'Edad: ' + c[0].label + ' años',
+                            label: c => ' Patrimonio: ' + fmtE(c.parsed.y)
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        ticks: { font: { size: 10 }, color: '#888', maxTicksLimit: 12, autoSkip: true },
+                        grid:  { color: 'rgba(0,0,0,0.05)' },
+                        title: { display: true, text: 'Edad', font: { size: 10 }, color: '#888' }
+                    },
+                    y: {
+                        ticks: {
+                            font: { size: 10 }, color: '#888',
+                            callback: v => {
+                                const sign = v < 0 ? '-' : '';
+                                const av = Math.abs(v);
+                                if (av >= 1000000) return sign + (av / 1000000).toFixed(1) + 'M €';
+                                if (av >= 1000)    return sign + (av / 1000).toFixed(0) + 'k €';
+                                return sign + av + ' €';
+                            }
+                        },
+                        grid: { color: 'rgba(0,0,0,0.05)' }
+                    }
+                }
+            }
+        });
+
+        /* Puntos de fase */
+        function addPoint(targetAge, color) {
+            const idx = labels.indexOf(targetAge);
+            if (idx > -1) {
+                chart.data.datasets.push({
+                    data: labels.map((_, i) => i === idx ? vals[idx] : null),
+                    pointRadius: labels.map((_, i) => i === idx ? 7 : 0),
+                    pointBackgroundColor: color,
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    showLine: false,
+                    fill: false
+                });
+            }
+        }
+
+        if (retireAge > age && retireAge <= horizon) addPoint(retireAge, '#639922');
+        if (67 > age && 67 <= horizon)               addPoint(67, '#1D9E75');
+        chart.update('none');
+    }
+
+    /* ─── ANÁLISIS DINÁMICO ─── */
+    function renderInsight(age, retireAge, horizon, wealth, annualReturn, annualExpense, annualSalary, pension, returnRate, inflationRate, wealthAtRetire, sustYears, finalW, ageZero) {
+        const margin       = (returnRate - inflationRate) * 100;
+        const yearsWorking = retireAge - age;
+        const annualFlow   = annualSalary - annualExpense;
+        let html = '';
+
+        if (yearsWorking > 0) {
+            html += `<strong>Fase laboral (${yearsWorking} años):</strong> `;
+            if (annualFlow > 0) {
+                html += `ahorras <strong style="color:#0F6E56">${fmtE(annualFlow)}/año</strong> tras gastos. Tu patrimonio crece por rendimientos y por ahorro acumulado.`;
+            } else if (annualFlow < 0) {
+                html += `el gasto supera al salario en <strong style="color:#A32D2D">${fmtE(Math.abs(annualFlow))}/año</strong>. El patrimonio puede menguar si el rendimiento no lo compensa.`;
+            } else {
+                html += 'salario y gastos se compensan. El patrimonio solo crece por rendimientos.';
+            }
+            html += '<br><br>';
+        }
+
+        html += `<strong>Al retirarte a los ${retireAge}:</strong> patrimonio estimado de <strong>${fmtE(wealthAtRetire)}</strong>. `;
+        if (margin < 1.5) {
+            html += `El margen rendimiento-inflación es solo <strong style="color:#A32D2D">${margin.toFixed(1)} p.p.</strong>, lo que limita la sostenibilidad.`;
+        } else {
+            html += `Con ${margin.toFixed(1)} p.p. sobre la inflación, el capital tiene cierta resistencia real.`;
+        }
+
+        if (pension > 0) {
+            const pct = ((pension / annualExpense) * 100).toFixed(0);
+            html += `<br><br><strong>Pensión desde los 67:</strong> cubre el ${pct}% del gasto actual, aliviando la presión sobre el patrimonio en la etapa final.`;
+        }
+
+        html += '<br><br>';
+        if (sustYears === Infinity) {
+            html += `<strong>Conclusión:</strong> patrimonio <strong style="color:#0F6E56">sostenible indefinidamente</strong> desde el retiro.`;
+        } else if (ageZero && ageZero > horizon) {
+            html += `<strong>Conclusión:</strong> el patrimonio aguanta hasta los <strong style="color:#0F6E56">${ageZero} años</strong>, más allá de tu horizonte. Llegas a los ${horizon} con ${fmtE(finalW)}.`;
+        } else if (ageZero) {
+            html += `<strong>Conclusión:</strong> patrimonio agotado a los <strong style="color:#A32D2D">${ageZero} años</strong>, ${horizon - ageZero} años antes de tu horizonte. Déficit final: ${fmtE(Math.abs(finalW))}.`;
+        }
+
+        $('insight-text').innerHTML = html;
+    }
+
+    /* ─── FASES ─── */
+    function renderPhases(age, retireAge, horizon, annualSalary, annualExpense, annualReturn, pension, wealthAtRetire, sustYears, ageZero, inflationRate) {
+        const phases = [];
+
+        if (retireAge > age) {
+            const flow = annualSalary - annualExpense;
+            phases.push({
+                color: flow >= 0 ? 'dot-blue' : 'dot-amber',
+                text: `<strong>Fase laboral — ${age} a ${retireAge} años (${retireAge - age} años):</strong> ${
+                    flow >= 0
+                    ? 'salario > gastos, acumulas ' + fmtE(flow) + '/año adicionales al rendimiento del patrimonio.'
+                    : 'gastos > salario en ' + fmtE(Math.abs(flow)) + '/año. El rendimiento puede compensarlo parcialmente.'
+                }`
+            });
+        }
+
+        if (retireAge < 67 && horizon > retireAge) {
+            const expAt67 = annualExpense * Math.pow(1 + inflationRate, 67 - age);
+            phases.push({
+                color: 'dot-amber',
+                text: `<strong>Retiro sin pensión — ${retireAge} a 67 años (${67 - retireAge} años):</strong> dependes íntegramente del patrimonio. A los 67 el gasto habrá crecido a ~${fmtE(expAt67)}/año por inflación.`
+            });
+        }
+
+        if (horizon > 67) {
+            const expAt67 = annualExpense * Math.pow(1 + inflationRate, Math.max(0, 67 - age));
+            const penAt67 = pension * Math.pow(1 + inflationRate, Math.max(0, 67 - age));
+            if (pension > 0) {
+                phases.push({
+                    color: 'dot-green',
+                    text: `<strong>Con pensión — desde los 67 años:</strong> pensión estimada de ~${fmtE(penAt67)}/año. Gasto estimado: ~${fmtE(expAt67)}/año. Gasto neto del patrimonio: ~${fmtE(Math.max(0, expAt67 - penAt67))}/año.`
+                });
+            } else {
+                phases.push({
+                    color: 'dot-amber',
+                    text: `<strong>Desde los 67 años:</strong> sin pensión pública configurada. La inflación habrá elevado el gasto a ~${fmtE(expAt67)}/año.`
+                });
+            }
+        }
+
+        if (ageZero && ageZero <= horizon) {
+            phases.push({
+                color: 'dot-red',
+                text: `<strong>Punto crítico — edad ${ageZero}:</strong> patrimonio agotado. Considera reducir gastos, aumentar rendimiento o diversificar ingresos antes del retiro.`
+            });
+        } else {
+            phases.push({
+                color: 'dot-green',
+                text: `<strong>A los ${horizon} años:</strong> el patrimonio ${(sustYears === Infinity || (ageZero && ageZero > horizon)) ? 'sigue siendo positivo.' : 'se habría agotado antes de esta edad.'}`
+            });
+        }
+
+        $('phase-list').innerHTML = phases.map(p =>
+            `<div class="phase"><span class="phase-dot ${p.color}"></span><span>${p.text}</span></div>`
+        ).join('');
+    }
+
+    /* ─── EVENT LISTENERS ─── */
+    $('monthlyExpense').addEventListener('input', syncRateFromExpense);
+    $('withdrawalRate').addEventListener('input', syncExpenseFromRate);
+    $('investment').addEventListener('input', syncRateFromInv);
+    ['age', 'retireAge', 'timeHorizon', 'returnRate', 'inflationRate', 'salary', 'pension'].forEach(id =>
+        $(id).addEventListener('input', calc)
+    );
+
+    /* ─── INICIALIZACIÓN ─── */
+    (function init() {
+        const inv = parseFloat($('investment').value) || 0;
+        const exp = parseFloat($('monthlyExpense').value) || 0;
+        if (inv > 0 && exp > 0) $('withdrawalRate').value = (((exp * 12) / inv) * 100).toFixed(2);
+        calc();
+    })();
+</script>
+</body>
+</html>
