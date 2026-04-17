@@ -6,7 +6,7 @@ Una herramienta web interactiva de dos pestañas para planificar la sostenibilid
 
 ## Demo
 
-Abre el archivo `Calc_TF_v5.html` directamente en cualquier navegador moderno. No requiere servidor, instalación ni dependencias locales.
+Abre el archivo `Calc_TF_v1.3.html` directamente en cualquier navegador moderno. No requiere servidor, instalación ni dependencias locales.
 
 > Requiere conexión a internet para cargar Chart.js desde CDN. La función de análisis con IA requiere además estar en [claude.ai](https://claude.ai). Ver sección [Uso offline](#uso-offline) para la alternativa sin conexión.
 
