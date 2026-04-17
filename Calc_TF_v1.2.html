@@ -16,26 +16,19 @@
             padding: 20px 24px;
         }
 
-        h1 {
-            font-size: 20px;
-            font-weight: 600;
-            margin-bottom: 12px;
-        }
+        h1 { font-size: 20px; font-weight: 600; margin-bottom: 12px; }
 
         .layout {
             display: grid;
-            grid-template-columns: 360px minmax(0, 1fr);
+            grid-template-columns: 440px minmax(0, 1fr);
             gap: 20px;
-            max-width: 1300px;
+            max-width: 1400px;
             margin: auto;
             align-items: start;
         }
 
-        @media (max-width: 860px) {
-            .layout { grid-template-columns: 1fr; }
-        }
+        @media (max-width: 860px) { .layout { grid-template-columns: 1fr; } }
 
-        /* ── CALCULADORA ── */
         .calc { display: flex; flex-direction: column; gap: 10px; }
 
         .sec {
@@ -64,15 +57,10 @@
             gap: 8px;
         }
 
-        .row label {
-            flex: 1;
-            font-size: 12px;
-            color: #555;
-            line-height: 1.35;
-        }
+        .row label { flex: 1; font-size: 12px; color: #555; line-height: 1.35; }
 
         .row input {
-            width: 120px;
+            width: 145px;
             text-align: right;
             font-size: 12px;
             padding: 4px 8px;
@@ -82,26 +70,14 @@
             color: #222;
         }
 
-        .row input:focus {
-            outline: none;
-            border-color: #aaa;
-        }
+        .row input:focus { outline: none; border-color: #aaa; }
 
-        .val {
-            font-size: 12px;
-            font-weight: 600;
-            text-align: right;
-            min-width: 120px;
-            color: #222;
-        }
+        .row input.savings-input { border-color: #b5d4f4; background: #f0f7ff; }
 
+        .val { font-size: 12px; font-weight: 600; text-align: right; min-width: 145px; color: #222; }
         .val.hi { color: #185FA5; }
 
-        .divider {
-            border: none;
-            border-top: 1px solid #eee;
-            margin: 1px 0;
-        }
+        .divider { border: none; border-top: 1px solid #eee; margin: 1px 0; }
 
         .badge-inf {
             display: inline-block;
@@ -113,13 +89,64 @@
             border-radius: 5px;
         }
 
-        .linked-lbl {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
+        .linked-lbl { display: flex; align-items: center; gap: 4px; }
         .link-icon { font-size: 10px; color: #bbb; }
+
+        /* ── Collapsible section ── */
+        .sec-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+            margin-bottom: 1px;
+        }
+        .sec-header:hover .collapse-icon { color: #555; }
+        .collapse-icon {
+            font-size: 13px;
+            color: #bbb;
+            line-height: 1;
+            transition: transform 0.2s;
+        }
+        .collapse-icon.collapsed { transform: rotate(-90deg); }
+        .sec-body { display: flex; flex-direction: column; gap: 8px; }
+        .sec-body.hidden { display: none; }
+
+        /* ── Tooltip icono (i) ── */
+        .info-wrap { position: relative; display: inline-flex; align-items: center; }
+        .info-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #b5d4f4;
+            color: #0C447C;
+            font-size: 9px;
+            font-weight: 700;
+            font-style: normal;
+            cursor: default;
+            flex-shrink: 0;
+            margin-left: 4px;
+        }
+        .info-tooltip {
+            display: none;
+            position: absolute;
+            left: 20px;
+            top: -4px;
+            width: 230px;
+            background: #1a1a1a;
+            color: #f0f0f0;
+            font-size: 11px;
+            font-weight: 400;
+            line-height: 1.5;
+            padding: 7px 10px;
+            border-radius: 6px;
+            z-index: 100;
+            pointer-events: none;
+        }
+        .info-wrap:hover .info-tooltip { display: block; }
 
         /* ── PANEL DERECHO ── */
         .right { display: flex; flex-direction: column; gap: 12px; }
@@ -130,9 +157,7 @@
             gap: 8px;
         }
 
-        @media (max-width: 600px) {
-            .metrics { grid-template-columns: 1fr 1fr; }
-        }
+        @media (max-width: 600px) { .metrics { grid-template-columns: 1fr 1fr; } }
 
         .metric {
             background: #fff;
@@ -141,18 +166,8 @@
             padding: 10px 12px;
         }
 
-        .metric .mlabel {
-            font-size: 10px;
-            color: #888;
-            margin-bottom: 4px;
-        }
-
-        .metric .mval {
-            font-size: 18px;
-            font-weight: 700;
-            color: #222;
-        }
-
+        .metric .mlabel { font-size: 10px; color: #888; margin-bottom: 4px; }
+        .metric .mval { font-size: 18px; font-weight: 700; color: #222; }
         .metric .mval.good { color: #0F6E56; }
         .metric .mval.bad  { color: #A32D2D; }
 
@@ -172,27 +187,9 @@
             margin-bottom: 9px;
         }
 
-        .legend {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin-bottom: 7px;
-        }
-
-        .leg-item {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            font-size: 11px;
-            color: #666;
-        }
-
-        .leg-sq {
-            width: 9px;
-            height: 9px;
-            border-radius: 2px;
-            flex-shrink: 0;
-        }
+        .legend { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 7px; }
+        .leg-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: #666; }
+        .leg-sq { width: 9px; height: 9px; border-radius: 2px; flex-shrink: 0; }
 
         .bottom-row {
             display: grid;
@@ -200,26 +197,12 @@
             gap: 12px;
         }
 
-        @media (max-width: 600px) {
-            .bottom-row { grid-template-columns: 1fr; }
-        }
+        @media (max-width: 600px) { .bottom-row { grid-template-columns: 1fr; } }
 
-        .insight-text {
-            font-size: 12px;
-            color: #555;
-            line-height: 1.65;
-        }
+        .insight-text { font-size: 12px; color: #555; line-height: 1.65; }
+        .insight-text strong { font-weight: 600; color: #222; }
 
-        .insight-text strong {
-            font-weight: 600;
-            color: #222;
-        }
-
-        .phase-list {
-            display: flex;
-            flex-direction: column;
-            gap: 7px;
-        }
+        .phase-list { display: flex; flex-direction: column; gap: 7px; }
 
         .phase {
             display: flex;
@@ -230,18 +213,11 @@
             line-height: 1.5;
         }
 
-        .phase-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            flex-shrink: 0;
-            margin-top: 4px;
-        }
-
-        .dot-red    { background: #E24B4A; }
-        .dot-amber  { background: #EF9F27; }
-        .dot-green  { background: #639922; }
-        .dot-blue   { background: #378ADD; }
+        .phase-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
+        .dot-red   { background: #E24B4A; }
+        .dot-amber { background: #EF9F27; }
+        .dot-green { background: #639922; }
+        .dot-blue  { background: #378ADD; }
     </style>
 </head>
 <body>
@@ -253,10 +229,14 @@
         <h1>Calculadora financiera</h1>
 
         <div class="sec">
-            <div class="sec-title">Datos personales</div>
+            <div class="sec-header" onclick="toggleSection(this)">
+                <div class="sec-title" style="margin-bottom:0">Datos personales</div>
+                <span class="collapse-icon">&#9660;</span>
+            </div>
+            <div class="sec-body">
             <div class="row">
                 <label>Edad actual</label>
-                <input type="number" id="age" min="1" max="99" value="40">
+                <input type="number" id="age" min="1" max="99" value="47">
             </div>
             <div class="row">
                 <label>Edad de retiro</label>
@@ -264,7 +244,8 @@
             </div>
             <div class="row">
                 <label>Horizonte temporal (años de vida)</label>
-                <input type="number" id="timeHorizon" min="1" max="120" value="90">
+                <input type="number" id="timeHorizon" min="1" max="120" value="99">
+            </div>
             </div>
         </div>
 
@@ -272,7 +253,7 @@
             <div class="sec-title">Patrimonio e inversión</div>
             <div class="row">
                 <label>Patrimonio invertido (€)</label>
-                <input type="number" id="investment" min="0" max="100000000" value="200000">
+                <input type="number" id="investment" min="0" max="100000000" value="350000">
             </div>
             <div class="row">
                 <label>Rendimiento anual (%)</label>
@@ -280,7 +261,7 @@
             </div>
             <div class="row">
                 <label>Inflación anual (%)</label>
-                <input type="number" id="inflationRate" min="0" max="10" step="0.01" value="3.00">
+                <input type="number" id="inflationRate" min="0" max="10" step="0.01" value="2.80">
             </div>
         </div>
 
@@ -288,21 +269,35 @@
             <div class="sec-title">Ingresos y gastos</div>
             <div class="row">
                 <label>Salario mensual actual (€)</label>
-                <input type="number" id="salary" min="0" max="100000" step="100" value="2000">
+                <input type="number" id="salary" min="0" max="100000" step="100" value="2800">
             </div>
             <div class="row">
                 <label>Gasto mensual (€)</label>
-                <input type="number" id="monthlyExpense" min="1" max="100000" step="10" value="1500">
+                <input type="number" id="monthlyExpense" min="1" max="100000" step="10" value="2100">
             </div>
             <div class="row">
                 <label>
                     <span class="linked-lbl">Tasa de retiro anual (%) <span class="link-icon">⇄</span></span>
                 </label>
-                <input type="number" id="withdrawalRate" min="0" max="100" step="0.01" value="9.00">
+                <input type="number" id="withdrawalRate" min="0" max="100" step="0.01" value="7.20">
             </div>
             <div class="row">
                 <label>Pensión pública mensual (€)</label>
                 <input type="number" id="pension" min="0" max="4000" step="100" value="1000">
+            </div>
+        </div>
+
+        <div class="sec">
+            <div class="sec-title">
+                <span class="info-wrap">
+                    Ahorro durante fase laboral
+                    <i class="info-icon">i</i>
+                    <span class="info-tooltip">El exceso de salario sobre gastos se acumula en una cuenta separada con su propio rendimiento. Al retiro, si el patrimonio invertido no cubre los gastos, se tira primero de este ahorro.</span>
+                </span>
+            </div>
+            <div class="row">
+                <label>Rendimiento cuenta ahorro (%)</label>
+                <input type="number" id="savingsRate" min="0" max="10" step="0.01" value="2.00" class="savings-input">
             </div>
         </div>
 
@@ -317,7 +312,7 @@
                 <span class="val" id="initialAnnualExpense">—</span>
             </div>
             <div class="row">
-                <label>Ahorro/déficit anual antes del retiro (€)</label>
+                <label>Ahorro/déficit neto anual (salario−gasto) (€)</label>
                 <span class="val" id="annualSavings">—</span>
             </div>
             <div class="row">
@@ -326,9 +321,32 @@
             </div>
             <hr class="divider">
             <div class="row">
-                <label>Tasa de consumo sobre patrimonio (%)</label>
+                <label>
+                    <span class="info-wrap">Tasa de retiro sobre patrimonio actual (%)
+                        <i class="info-icon">i</i>
+                        <span class="info-tooltip">Gasto anual ÷ patrimonio invertido hoy. Indicador estático del año 1, sin tener en cuenta el salario ni la inflación futura.</span>
+                    </span>
+                </label>
                 <span class="val hi" id="initialWithdrawalRateDisplay">—</span>
             </div>
+            <div class="row">
+                <label>
+                    <span class="info-wrap">Tasa de retiro efectiva al retiro (%)
+                        <i class="info-icon">i</i>
+                        <span class="info-tooltip">Porcentaje del patrimonio invertido que se retira el primer año en que el ahorro acumulado se agota y el patrimonio carga solo con el gasto neto. Es la presión real y sostenida sobre la cartera a largo plazo.</span>
+                    </span>
+                </label>
+                <span class="val hi" id="effectiveWithdrawalRateDisplay">—</span>
+            </div>
+            <div class="row">
+                <label>Patrimonio invertido al retiro (€)</label>
+                <span class="val" id="wealthAtRetireDisplay">—</span>
+            </div>
+            <div class="row">
+                <label>Ahorro acumulado al retiro (€)</label>
+                <span class="val" id="savingsAtRetireDisplay">—</span>
+            </div>
+            <hr class="divider">
             <div class="row">
                 <label>Años de sostenibilidad (desde retiro)</label>
                 <span class="val hi" id="yearsOfSustainability">—</span>
@@ -364,12 +382,13 @@
 
         <div class="card">
             <div class="legend">
-                <span class="leg-item"><span class="leg-sq" style="background:#378ADD"></span>Patrimonio</span>
+                <span class="leg-item"><span class="leg-sq" style="background:#378ADD"></span>Patrimonio invertido</span>
+                <span class="leg-item"><span class="leg-sq" style="background:#85B7EB; border: 1px dashed #378ADD"></span>+ Ahorro acumulado</span>
                 <span class="leg-item"><span class="leg-sq" style="background:#639922"></span>Inicio retiro</span>
                 <span class="leg-item"><span class="leg-sq" style="background:#1D9E75"></span>Inicio pensión (67)</span>
             </div>
             <div style="position: relative; width: 100%; height: 240px;">
-                <canvas id="wealthChart" role="img" aria-label="Evolución anual del patrimonio por fases de vida: laboral, retiro y pensión">
+                <canvas id="wealthChart" role="img" aria-label="Evolución anual del patrimonio invertido y ahorro acumulado por fases de vida">
                     Gráfico de evolución patrimonial por edades.
                 </canvas>
             </div>
@@ -392,6 +411,13 @@
 <script>
     const $ = id => document.getElementById(id);
 
+    function toggleSection(header) {
+        const body = header.nextElementSibling;
+        const icon = header.querySelector('.collapse-icon');
+        body.classList.toggle('hidden');
+        icon.classList.toggle('collapsed');
+    }
+
     function fmtE(v) {
         if (isNaN(v)) v = 0;
         return new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(v);
@@ -404,7 +430,6 @@
     let chart = null;
     let updating = false;
 
-    /* ─── SINCRONIZACIÓN TASA ⇄ GASTO ─── */
     function syncRateFromExpense() {
         if (updating) return;
         updating = true;
@@ -444,6 +469,7 @@
         const initialWealth  = parseFloat($('investment').value) || 0;
         const returnRate     = (parseFloat($('returnRate').value) / 100) || 0;
         const inflationRate  = (parseFloat($('inflationRate').value) / 100) || 0;
+        const savingsRate    = (parseFloat($('savingsRate').value) / 100) || 0;
         const monthlySalary  = parseFloat($('salary').value) || 0;
         const monthlyExpense = parseFloat($('monthlyExpense').value) || 0;
         const monthlyPension = parseFloat($('pension').value) || 0;
@@ -458,69 +484,145 @@
 
         if (initialWealth < 0 || age <= 0 || timeHorizon <= age || monthlyExpense <= 0) return;
 
-        const annualReturnInitial   = initialWealth * returnRate;
-        const annualSavingsVal      = (retireAge > age)
-            ? annualSalary - annualExpense + annualReturnInitial
-            : annualReturnInitial - annualExpense;
-        const wdRatePct = (annualExpense / Math.max(1, initialWealth)) * 100;
+        const annualReturnInitial = initialWealth * returnRate;
+        const annualFlowNet       = annualSalary - annualExpense; // exceso puro salario−gasto
+        const wdRatePct           = (annualExpense / Math.max(1, initialWealth)) * 100;
 
-        $('annualReturn').textContent           = fmtE2(annualReturnInitial);
-        $('initialAnnualExpense').textContent   = fmtE2(annualExpense);
+        $('annualReturn').textContent                = fmtE2(annualReturnInitial);
+        $('initialAnnualExpense').textContent        = fmtE2(annualExpense);
         $('initialWithdrawalRateDisplay').textContent = wdRatePct.toFixed(2) + ' %';
 
         const savEl = $('annualSavings');
-        savEl.textContent  = fmtE2(annualSavingsVal);
-        savEl.style.color  = annualSavingsVal >= 0 ? '#0F6E56' : '#A32D2D';
+        savEl.textContent = fmtE2(annualFlowNet);
+        savEl.style.color = annualFlowNet >= 0 ? '#0F6E56' : '#A32D2D';
 
-        /* Simulación año a año */
+        /* ── Simulación año a año ──
+           Convención: push DESPUÉS de aplicar rendimientos y retiros.
+           simData[0] = estado al final del año 1 (edad age+1), etc.
+           Para leer el estado AL INICIO de la simulación usamos los valores iniciales directamente.
+        */
         const simData = [];
-        let w = initialWealth, exp = annualExpense, sal = annualSalary;
+        let w  = initialWealth;
+        let sv = 0;
+        // Punto de partida (edad=age, inicio)
+        simData.push({ age: age, wealth: w, savings: sv, total: w + sv });
 
-        for (let i = 0; i <= yearsToHorizon; i++) {
-            const curAge = age + i;
-            simData.push({ age: curAge, wealth: w });
-            if (i < yearsToHorizon) {
-                w = w * (1 + returnRate);
-                if (curAge < retireAge) {
-                    w += sal - exp;
+        let exp = annualExpense;
+        let sal = annualSalary;
+
+        for (let i = 0; i < yearsToHorizon; i++) {
+            const curAge = age + i;  // edad al INICIO de este año
+
+            // 1. Rendimientos
+            w  *= (1 + returnRate);
+            sv *= (1 + savingsRate);
+
+            // 2. Flujos
+            if (curAge < retireAge) {
+                const flow = sal - exp;
+                if (flow >= 0) {
+                    sv += flow;
                 } else {
-                    const pen = curAge >= 67 ? annualPension : 0;
-                    w -= Math.max(0, exp - pen);
+                    const fromSv = Math.min(sv, -flow);
+                    sv -= fromSv;
+                    w  -= (-flow - fromSv);
                 }
-                exp *= (1 + inflationRate);
-                sal *= (1 + inflationRate);
+            } else {
+                const pen    = curAge >= 67 ? annualPension : 0;
+                const net    = Math.max(0, exp - pen);
+                const fromSv = Math.min(sv, net);
+                sv -= fromSv;
+                w  -= (net - fromSv);
             }
+
+            // 3. Inflación para el siguiente año
+            exp *= (1 + inflationRate);
+            sal *= (1 + inflationRate);
+
+            // 4. Registrar estado al FINAL del año (= inicio de edad age+i+1)
+            simData.push({ age: age + i + 1, wealth: w, savings: sv, total: w + sv });
         }
 
-        const wealthAtRetire = simData.find(d => d.age === retireAge)?.wealth ?? simData[simData.length - 1].wealth;
-        const finalW         = simData[simData.length - 1].wealth;
+        // Estado exacto al inicio del año de retiro (= fin del año retireAge-1)
+        const dataAtRetire    = simData.find(d => d.age === retireAge) ?? simData[simData.length - 1];
+        const wealthAtRetire  = dataAtRetire.wealth;
+        const savingsAtRetire = dataAtRetire.savings;
+        const finalTotal      = simData[simData.length - 1].total;
 
-        /* Sostenibilidad desde el retiro:
-           curExp2 y curPen2 parten del valor ya inflado en el año del retiro
-           y crecen al mismo ritmo (inflationRate) en paralelo, igual que la sim principal */
+        // Mostrar resultados de retiro
+        $('wealthAtRetireDisplay').textContent  = fmtE2(wealthAtRetire);
+        $('savingsAtRetireDisplay').textContent = fmtE2(savingsAtRetire);
+        $('finalWealth').textContent = fmtE2(finalTotal);
+
+        // Tasa de retiro efectiva: primer año en que el ahorro se agota
+        // y el patrimonio tiene que cargar con todo el gasto neto.
+        // Si no hay ahorro al retiro, es simplemente el primer año del retiro.
+        {
+            let tSv = savingsAtRetire, tW = wealthAtRetire;
+            let tExp = annualExpense * Math.pow(1 + inflationRate, Math.max(0, retireAge - age));
+            let effectiveRate = 0;
+            let found = false;
+            for (let i = 0; i < 60; i++) {
+                const curAge = retireAge + i;
+                tW  *= (1 + returnRate);
+                tSv *= (1 + savingsRate);
+                const pen = curAge >= 67 ? annualPension : 0;
+                const net = Math.max(0, tExp - pen);
+                const fromSv = Math.min(tSv, net);
+                tSv -= fromSv;
+                const netFromPortfolio = net - fromSv;
+                tW -= netFromPortfolio;
+                tExp *= (1 + inflationRate);
+                // primer año en que el portfolio absorbe algo
+                if (netFromPortfolio > 0 && tW > 0) {
+                    effectiveRate = (netFromPortfolio / tW) * 100;
+                    found = true;
+                    break;
+                }
+            }
+            $('effectiveWithdrawalRateDisplay').textContent = found ? effectiveRate.toFixed(2) + ' %' : '0.00 %';
+        }
+
+        /* ── Sostenibilidad desde el retiro ──
+           Usa EXACTAMENTE la misma lógica que la sim principal:
+           - gasto se infla cada año
+           - pensión es nominal fija (igual que annualPension en la sim principal)
+        */
         let sustYears = 0, ageZero = null;
         let simW2   = wealthAtRetire;
-        let curExp2 = annualExpense  * Math.pow(1 + inflationRate, Math.max(0, retireAge - age));
-        let curPen2 = annualPension  * Math.pow(1 + inflationRate, Math.max(0, retireAge - age));
+        let simSv2  = savingsAtRetire;
+        let curExp2 = annualExpense * Math.pow(1 + inflationRate, Math.max(0, retireAge - age));
         const maxY  = 150;
 
         for (let i = 0; i < maxY; i++) {
             const curAge = retireAge + i;
-            const pen    = curAge >= 67 ? curPen2 : 0;
-            const net    = Math.max(0, curExp2 - pen);
-            simW2        = simW2 * (1 + returnRate) - net;
-            curExp2     *= (1 + inflationRate);
-            curPen2     *= (1 + inflationRate);
-            if (simW2 <= 0) {
-                const prev = curExp2 / (1 + inflationRate);
-                sustYears = i + Math.abs(simW2) / (prev - simW2 + Math.abs(simW2));
+
+            // 1. Rendimientos
+            simW2  *= (1 + returnRate);
+            simSv2 *= (1 + savingsRate);
+
+            // 2. Retiro: pensión nominal fija (igual que sim principal), gasto inflado
+            const pen     = curAge >= 67 ? annualPension : 0;
+            const net     = Math.max(0, curExp2 - pen);
+            const fromSv2 = Math.min(simSv2, net);
+            simSv2 -= fromSv2;
+            simW2  -= (net - fromSv2);
+
+            // 3. Inflación solo sobre el gasto
+            curExp2 *= (1 + inflationRate);
+
+            // 4. ¿Agotado?
+            const totalNow = simW2 + simSv2;
+            if (totalNow <= 0) {
+                const totalBefore = totalNow + net;
+                const frac = net > 0 ? Math.max(0, Math.min(1, totalBefore / net)) : 0;
+                sustYears = i + frac;
                 ageZero   = Math.round(retireAge + sustYears);
                 break;
             }
+
             if (i === maxY - 1) sustYears = Infinity;
         }
-
-        $('finalWealth').textContent = fmtE2(finalW);
 
         if (sustYears === Infinity) {
             $('yearsOfSustainability').innerHTML = '<span class="badge-inf">Indefinido</span>';
@@ -531,30 +633,31 @@
         /* Métricas */
         const myEl = $('m-years');
         if (sustYears === Infinity) { myEl.textContent = 'Ilimitado'; myEl.className = 'mval good'; }
-        else { myEl.textContent = Math.max(0, sustYears).toFixed(1) + ' años'; myEl.className = 'mval ' + ((ageZero && ageZero > timeHorizon) ? 'good' : 'bad'); }
+        else { myEl.textContent = Math.max(0, sustYears).toFixed(1) + ' años'; myEl.className = 'mval ' + ((ageZero && ageZero > timeHorizon && finalTotal >= 0) ? 'good' : 'bad'); }
 
         const retEl = $('m-retire');
-        retEl.textContent = fmtE(wealthAtRetire);
-        retEl.className   = 'mval ' + (wealthAtRetire >= initialWealth ? 'good' : 'bad');
+        retEl.textContent = fmtE(wealthAtRetire + savingsAtRetire);
+        retEl.className   = 'mval ' + ((wealthAtRetire + savingsAtRetire) >= initialWealth ? 'good' : 'bad');
 
         const finEl = $('m-final');
-        finEl.textContent = fmtE(finalW);
-        finEl.className   = 'mval ' + (finalW >= 0 ? 'good' : 'bad');
+        finEl.textContent = fmtE(finalTotal);
+        finEl.className   = 'mval ' + (finalTotal >= 0 ? 'good' : 'bad');
 
         const a0El = $('m-age0');
-        if (ageZero) { a0El.textContent = ageZero + ' años'; a0El.className = 'mval ' + (ageZero > timeHorizon ? 'good' : 'bad'); }
+        if (ageZero) { a0El.textContent = ageZero + ' años'; a0El.className = 'mval ' + (ageZero > timeHorizon && finalTotal >= 0 ? 'good' : 'bad'); }
         else         { a0El.textContent = '> ' + timeHorizon + ' años'; a0El.className = 'mval good'; }
 
         renderChart(simData, age, retireAge, timeHorizon);
-        renderInsight(age, retireAge, timeHorizon, initialWealth, annualReturnInitial, annualExpense, annualSalary, annualPension, returnRate, inflationRate, wealthAtRetire, sustYears, finalW, ageZero);
-        renderPhases(age, retireAge, timeHorizon, annualSalary, annualExpense, annualReturnInitial, annualPension, wealthAtRetire, sustYears, ageZero, inflationRate);
+        renderInsight(age, retireAge, timeHorizon, initialWealth, annualReturnInitial, annualExpense, annualSalary, annualPension, returnRate, inflationRate, savingsRate, wealthAtRetire, savingsAtRetire, sustYears, finalTotal, ageZero);
+        renderPhases(age, retireAge, timeHorizon, annualSalary, annualExpense, annualPension, wealthAtRetire, savingsAtRetire, sustYears, ageZero, inflationRate, savingsRate, finalTotal);
     }
 
     /* ─── GRÁFICO ─── */
     function renderChart(data, age, retireAge, horizon) {
-        const labels = data.map(d => d.age);
-        const vals   = data.map(d => Math.round(d.wealth));
-        const ctx    = $('wealthChart').getContext('2d');
+        const labels     = data.map(d => d.age);
+        const wealthVals = data.map(d => Math.round(d.wealth));
+        const totalVals  = data.map(d => Math.round(d.total));
+        const ctx        = $('wealthChart').getContext('2d');
 
         if (chart) { chart.destroy(); }
 
@@ -562,17 +665,29 @@
             type: 'line',
             data: {
                 labels,
-                datasets: [{
-                    label: 'Patrimonio',
-                    data: vals,
-                    borderColor: '#378ADD',
-                    borderWidth: 2,
-                    pointRadius: 0,
-                    pointHoverRadius: 4,
-                    fill: true,
-                    backgroundColor: 'rgba(55,138,221,0.08)',
-                    tension: 0.3
-                }]
+                datasets: [
+                    {
+                        label: 'Total (invertido + ahorro)',
+                        data: totalVals,
+                        borderColor: '#85B7EB',
+                        borderWidth: 1.5,
+                        borderDash: [4, 3],
+                        pointRadius: 0,
+                        fill: false,
+                        tension: 0.3
+                    },
+                    {
+                        label: 'Patrimonio invertido',
+                        data: wealthVals,
+                        borderColor: '#378ADD',
+                        borderWidth: 2,
+                        pointRadius: 0,
+                        pointHoverRadius: 4,
+                        fill: true,
+                        backgroundColor: 'rgba(55,138,221,0.08)',
+                        tension: 0.3
+                    }
+                ]
             },
             options: {
                 responsive: true,
@@ -583,7 +698,11 @@
                     tooltip: {
                         callbacks: {
                             title: c => 'Edad: ' + c[0].label + ' años',
-                            label: c => ' Patrimonio: ' + fmtE(c.parsed.y)
+                            label: c => {
+                                if (c.datasetIndex === 0) return ' Total: ' + fmtE(c.parsed.y);
+                                if (c.datasetIndex === 1) return ' Invertido: ' + fmtE(c.parsed.y);
+                                return null;
+                            }
                         }
                     }
                 },
@@ -610,12 +729,11 @@
             }
         });
 
-        /* Puntos de fase */
         function addPoint(targetAge, color) {
             const idx = labels.indexOf(targetAge);
             if (idx > -1) {
                 chart.data.datasets.push({
-                    data: labels.map((_, i) => i === idx ? vals[idx] : null),
+                    data: labels.map((_, i) => i === idx ? totalVals[idx] : null),
                     pointRadius: labels.map((_, i) => i === idx ? 7 : 0),
                     pointBackgroundColor: color,
                     pointBorderColor: '#fff',
@@ -632,60 +750,59 @@
     }
 
     /* ─── ANÁLISIS DINÁMICO ─── */
-    function renderInsight(age, retireAge, horizon, wealth, annualReturn, annualExpense, annualSalary, pension, returnRate, inflationRate, wealthAtRetire, sustYears, finalW, ageZero) {
-        const margin       = (returnRate - inflationRate) * 100;
-        const yearsWorking = retireAge - age;
-        const annualFlow   = annualSalary - annualExpense;
+    function renderInsight(age, retireAge, horizon, wealth, annualReturn, annualExpense, annualSalary, pension, returnRate, inflationRate, savingsRate, wealthAtRetire, savingsAtRetire, sustYears, finalTotal, ageZero) {
+        const margin     = (returnRate - inflationRate) * 100;
+        const flow       = annualSalary - annualExpense;
         let html = '';
 
-        if (yearsWorking > 0) {
-            html += `<strong>Fase laboral (${yearsWorking} años):</strong> `;
-            if (annualFlow > 0) {
-                html += `ahorras <strong style="color:#0F6E56">${fmtE(annualFlow)}/año</strong> tras gastos. Tu patrimonio crece por rendimientos y por ahorro acumulado.`;
-            } else if (annualFlow < 0) {
-                html += `el gasto supera al salario en <strong style="color:#A32D2D">${fmtE(Math.abs(annualFlow))}/año</strong>. El patrimonio puede menguar si el rendimiento no lo compensa.`;
+        if (retireAge > age) {
+            html += `<strong>Fase laboral (${retireAge - age} años):</strong> `;
+            if (flow > 0) {
+                html += `ahorras <strong style="color:#0F6E56">${fmtE(flow)}/año</strong> que van a tu cuenta de ahorro (${(savingsRate * 100).toFixed(1)}%). Al retirarte tendrás <strong>${fmtE(savingsAtRetire)}</strong> en ahorro y <strong>${fmtE(wealthAtRetire)}</strong> en cartera invertida.`;
+            } else if (flow < 0) {
+                html += `el gasto supera al salario en <strong style="color:#A32D2D">${fmtE(Math.abs(flow))}/año</strong>. Ese déficit se cubre primero del ahorro y luego del patrimonio invertido.`;
             } else {
-                html += 'salario y gastos se compensan. El patrimonio solo crece por rendimientos.';
+                html += 'salario y gastos se compensan. El patrimonio crece solo por rendimientos.';
             }
             html += '<br><br>';
         }
 
-        html += `<strong>Al retirarte a los ${retireAge}:</strong> patrimonio estimado de <strong>${fmtE(wealthAtRetire)}</strong>. `;
-        if (margin < 1.5) {
-            html += `El margen rendimiento-inflación es solo <strong style="color:#A32D2D">${margin.toFixed(1)} p.p.</strong>, lo que limita la sostenibilidad.`;
-        } else {
-            html += `Con ${margin.toFixed(1)} p.p. sobre la inflación, el capital tiene cierta resistencia real.`;
-        }
+        html += `<strong>Al retirarte a los ${retireAge}:</strong> total disponible <strong>${fmtE(wealthAtRetire + savingsAtRetire)}</strong> (${fmtE(wealthAtRetire)} invertido + ${fmtE(savingsAtRetire)} en ahorro). `;
+        html += margin < 1.5
+            ? `Margen rendimiento-inflación: <strong style="color:#A32D2D">${margin.toFixed(1)} p.p.</strong>, muy estrecho.`
+            : `Con ${margin.toFixed(1)} p.p. sobre inflación, el capital tiene resistencia real.`;
 
         if (pension > 0) {
             const pct = ((pension / annualExpense) * 100).toFixed(0);
-            html += `<br><br><strong>Pensión desde los 67:</strong> cubre el ${pct}% del gasto actual, aliviando la presión sobre el patrimonio en la etapa final.`;
+            html += `<br><br><strong>Pensión desde los 67:</strong> cubre el ${pct}% del gasto actual, reduciendo la presión sobre el patrimonio.`;
         }
 
         html += '<br><br>';
         if (sustYears === Infinity) {
-            html += `<strong>Conclusión:</strong> patrimonio <strong style="color:#0F6E56">sostenible indefinidamente</strong> desde el retiro.`;
-        } else if (ageZero && ageZero > horizon) {
-            html += `<strong>Conclusión:</strong> el patrimonio aguanta hasta los <strong style="color:#0F6E56">${ageZero} años</strong>, más allá de tu horizonte. Llegas a los ${horizon} con ${fmtE(finalW)}.`;
+            html += `<strong>Conclusión:</strong> recursos <strong style="color:#0F6E56">sostenibles indefinidamente</strong> desde el retiro.`;
+        } else if (ageZero && ageZero > horizon && finalTotal >= 0) {
+            html += `<strong>Conclusión:</strong> los recursos aguantan hasta los <strong style="color:#0F6E56">${ageZero} años</strong>, más allá de tu horizonte. Llegas a los ${horizon} con <strong style="color:#0F6E56">${fmtE(finalTotal)}</strong>.`;
+        } else if (ageZero && ageZero > horizon && finalTotal < 0) {
+            html += `<strong>Conclusión:</strong> técnicamente el patrimonio se agota a los <strong style="color:#A32D2D">${ageZero} años</strong> (más allá de tu horizonte de ${horizon}), pero el saldo a los ${horizon} ya es negativo: <strong style="color:#A32D2D">${fmtE(finalTotal)}</strong>. Esto indica que la curva cruza el cero entre los ${horizon} y los ${ageZero} años — revisa el gráfico.`;
         } else if (ageZero) {
-            html += `<strong>Conclusión:</strong> patrimonio agotado a los <strong style="color:#A32D2D">${ageZero} años</strong>, ${horizon - ageZero} años antes de tu horizonte. Déficit final: ${fmtE(Math.abs(finalW))}.`;
+            html += `<strong>Conclusión:</strong> recursos agotados a los <strong style="color:#A32D2D">${ageZero} años</strong>, ${horizon - ageZero} años antes de tu horizonte. Déficit a los ${horizon}: <strong style="color:#A32D2D">${fmtE(Math.abs(finalTotal))}</strong>.`;
         }
 
         $('insight-text').innerHTML = html;
     }
 
     /* ─── FASES ─── */
-    function renderPhases(age, retireAge, horizon, annualSalary, annualExpense, annualReturn, pension, wealthAtRetire, sustYears, ageZero, inflationRate) {
+    function renderPhases(age, retireAge, horizon, annualSalary, annualExpense, pension, wealthAtRetire, savingsAtRetire, sustYears, ageZero, inflationRate, savingsRate, finalTotal) {
         const phases = [];
+        const flow = annualSalary - annualExpense;
 
         if (retireAge > age) {
-            const flow = annualSalary - annualExpense;
             phases.push({
                 color: flow >= 0 ? 'dot-blue' : 'dot-amber',
                 text: `<strong>Fase laboral — ${age} a ${retireAge} años (${retireAge - age} años):</strong> ${
                     flow >= 0
-                    ? 'salario > gastos, acumulas ' + fmtE(flow) + '/año adicionales al rendimiento del patrimonio.'
-                    : 'gastos > salario en ' + fmtE(Math.abs(flow)) + '/año. El rendimiento puede compensarlo parcialmente.'
+                    ? `acumulas ${fmtE(flow)}/año en cuenta de ahorro al ${(savingsRate*100).toFixed(1)}%. Al retirarte: ${fmtE(wealthAtRetire)} en cartera + ${fmtE(savingsAtRetire)} en ahorro.`
+                    : `déficit de ${fmtE(Math.abs(flow))}/año cubierto del ahorro y/o patrimonio.`
                 }`
             });
         }
@@ -694,22 +811,22 @@
             const expAt67 = annualExpense * Math.pow(1 + inflationRate, 67 - age);
             phases.push({
                 color: 'dot-amber',
-                text: `<strong>Retiro sin pensión — ${retireAge} a 67 años (${67 - retireAge} años):</strong> dependes íntegramente del patrimonio. A los 67 el gasto habrá crecido a ~${fmtE(expAt67)}/año por inflación.`
+                text: `<strong>Retiro sin pensión — ${retireAge} a 67 años (${67 - retireAge} años):</strong> se tira primero del ahorro acumulado, luego del patrimonio invertido. A los 67 el gasto habrá crecido a ~${fmtE(expAt67)}/año.`
             });
         }
 
         if (horizon > 67) {
-            const expAt67 = annualExpense * Math.pow(1 + inflationRate, Math.max(0, 67 - age));
-            const penAt67 = pension * Math.pow(1 + inflationRate, Math.max(0, 67 - age));
+            const e67 = annualExpense * Math.pow(1 + inflationRate, Math.max(0, 67 - age));
+            const p67 = pension * Math.pow(1 + inflationRate, Math.max(0, 67 - age));
             if (pension > 0) {
                 phases.push({
                     color: 'dot-green',
-                    text: `<strong>Con pensión — desde los 67 años:</strong> pensión estimada de ~${fmtE(penAt67)}/año. Gasto estimado: ~${fmtE(expAt67)}/año. Gasto neto del patrimonio: ~${fmtE(Math.max(0, expAt67 - penAt67))}/año.`
+                    text: `<strong>Con pensión — desde los 67:</strong> pensión ~${fmtE(p67)}/año, gasto ~${fmtE(e67)}/año. Gasto neto: ~${fmtE(Math.max(0, e67 - p67))}/año. Primero se cubre del ahorro residual, luego del patrimonio.`
                 });
             } else {
                 phases.push({
                     color: 'dot-amber',
-                    text: `<strong>Desde los 67 años:</strong> sin pensión pública configurada. La inflación habrá elevado el gasto a ~${fmtE(expAt67)}/año.`
+                    text: `<strong>Desde los 67:</strong> sin pensión configurada. Gasto estimado ~${fmtE(e67)}/año.`
                 });
             }
         }
@@ -717,12 +834,17 @@
         if (ageZero && ageZero <= horizon) {
             phases.push({
                 color: 'dot-red',
-                text: `<strong>Punto crítico — edad ${ageZero}:</strong> patrimonio agotado. Considera reducir gastos, aumentar rendimiento o diversificar ingresos antes del retiro.`
+                text: `<strong>Punto crítico — edad ${ageZero}:</strong> tanto el ahorro como el patrimonio se agotan. Considera reducir gastos, aumentar rendimiento o alargar la fase laboral.`
+            });
+        } else if (ageZero && ageZero > horizon && finalTotal < 0) {
+            phases.push({
+                color: 'dot-red',
+                text: `<strong>A los ${horizon} años:</strong> saldo negativo (${fmtE(finalTotal)}). El agotamiento técnico ocurre a los ${ageZero} años, pero la curva ya es negativa antes del horizonte.`
             });
         } else {
             phases.push({
                 color: 'dot-green',
-                text: `<strong>A los ${horizon} años:</strong> el patrimonio ${(sustYears === Infinity || (ageZero && ageZero > horizon)) ? 'sigue siendo positivo.' : 'se habría agotado antes de esta edad.'}`
+                text: `<strong>A los ${horizon} años:</strong> los recursos siguen siendo positivos (${fmtE(finalTotal)}).`
             });
         }
 
@@ -735,7 +857,7 @@
     $('monthlyExpense').addEventListener('input', syncRateFromExpense);
     $('withdrawalRate').addEventListener('input', syncExpenseFromRate);
     $('investment').addEventListener('input', syncRateFromInv);
-    ['age', 'retireAge', 'timeHorizon', 'returnRate', 'inflationRate', 'salary', 'pension'].forEach(id =>
+    ['age', 'retireAge', 'timeHorizon', 'returnRate', 'inflationRate', 'salary', 'pension', 'savingsRate'].forEach(id =>
         $(id).addEventListener('input', calc)
     );
 
