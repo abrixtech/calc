@@ -495,20 +495,22 @@
         const wealthAtRetire = simData.find(d => d.age === retireAge)?.wealth ?? simData[simData.length - 1].wealth;
         const finalW         = simData[simData.length - 1].wealth;
 
-        /* Sostenibilidad desde el retiro */
+        /* Sostenibilidad desde el retiro:
+           curExp2 y curPen2 parten del valor ya inflado en el año del retiro
+           y crecen al mismo ritmo (inflationRate) en paralelo, igual que la sim principal */
         let sustYears = 0, ageZero = null;
-        let simW2 = wealthAtRetire;
-        let curExp2 = annualExpense * Math.pow(1 + inflationRate, Math.max(0, retireAge - age));
-        const maxY = 150;
+        let simW2   = wealthAtRetire;
+        let curExp2 = annualExpense  * Math.pow(1 + inflationRate, Math.max(0, retireAge - age));
+        let curPen2 = annualPension  * Math.pow(1 + inflationRate, Math.max(0, retireAge - age));
+        const maxY  = 150;
 
         for (let i = 0; i < maxY; i++) {
             const curAge = retireAge + i;
-            const pen = curAge >= 67
-                ? annualPension * Math.pow(1 + inflationRate, Math.max(0, curAge - age))
-                : 0;
-            const net = Math.max(0, curExp2 - pen);
-            simW2 = simW2 * (1 + returnRate) - net;
-            curExp2 *= (1 + inflationRate);
+            const pen    = curAge >= 67 ? curPen2 : 0;
+            const net    = Math.max(0, curExp2 - pen);
+            simW2        = simW2 * (1 + returnRate) - net;
+            curExp2     *= (1 + inflationRate);
+            curPen2     *= (1 + inflationRate);
             if (simW2 <= 0) {
                 const prev = curExp2 / (1 + inflationRate);
                 sustYears = i + Math.abs(simW2) / (prev - simW2 + Math.abs(simW2));
