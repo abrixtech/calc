@@ -1,6 +1,6 @@
 # Calculadora Financiera de Planificación de Retiro
 ## Resumen
-Una herramienta web interactiva de dos pestañas para planificar la sostenibilidad financiera a lo largo de las distintas etapas de la vida y diagnosticar la salud financiera actual.
+Herramienta web interactiva de dos pestañas para planificar la sostenibilidad financiera a lo largo de las distintas etapas de la vida y diagnosticar la salud financiera actual.
 Puedes probarla fácilmente aquí: https://abrixtech.github.io/calc/CalcFinz_v1.3.html . ¡Juega con los campos!
 
 ## Demo
