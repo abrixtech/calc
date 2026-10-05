@@ -301,11 +301,11 @@
             <div class="sec-body">
             <div class="row">
                 <label>Edad actual</label>
-                <input type="number" id="age" min="1" max="99" value="47" class="key-input">
+                <input type="number" id="age" min="1" max="99" value="48" class="key-input">
             </div>
             <div class="row">
                 <label>Edad estimada de retiro</label>
-                <input type="number" id="retireAge" min="1" max="99" value="60" class="key-input">
+                <input type="number" id="retireAge" min="1" max="99" value="58" class="key-input">
             </div>
             <div class="row">
                 <label>Horizonte temporal (años de vida)</label>
@@ -318,15 +318,15 @@
             <div class="sec-title">Patrimonio e inversión</div>
             <div class="row">
                 <label>Patrimonio invertido (€)</label>
-                <input type="number" id="investment" min="0" max="100000000" value="150000" class="key-input">
+                <input type="number" id="investment" min="0" max="100000000" value="300000" class="key-input">
             </div>
             <div class="row">
                 <label>Rendimiento anual (%)</label>
-                <input type="number" id="returnRate" min="0" max="20" step="0.01" value="5.00">
+                <input type="number" id="returnRate" min="0" max="20" step="0.5" value="5.00">
             </div>
             <div class="row">
                 <label>Inflación anual (%)</label>
-                <input type="number" id="inflationRate" min="0" max="10" step="0.01" value="2.80">
+                <input type="number" id="inflationRate" min="0" max="10" step="0.5" value="2.80">
             </div>
         </div>
 
@@ -334,16 +334,17 @@
             <div class="sec-title">Ingresos / Inversión / Gasto</div>
             <div class="row">
                 <label>Salario mensual actual (€)</label>
-                <input type="number" id="salary" min="0" max="100000" step="100" value="2800">
+                <input type="number" id="salary" min="0" max="100000" step="100" value="3200">
             </div>
             <div class="row">
                 <label>Inversión mensual (€)</label>
-                <input type="number" id="monthlyInvestment" min="0" max="100000" step="50" value="0">
+                <input type="number" id="monthlyInvestment" min="0" max="100000" step="100" value="1000">
             </div>
             <div class="row">
                 <label>Gasto mensual (€)</label>
-                <input type="number" id="monthlyExpense" min="1" max="100000" step="10" value="2100">
+                <input type="number" id="monthlyExpense" min="0" max="100000" step="100" value="2100">
             </div>
+            <div id="incomeSavings" style="display:none;color:#0F6E56;font-size:0.82rem;margin-top:6px;padding:4px 6px;background:#f0faf6;border-left:3px solid #0F6E56;border-radius:2px;"></div>
             <div id="incomeWarning" style="display:none;color:#A32D2D;font-size:0.82rem;margin-top:6px;padding:4px 6px;background:#fdf0f0;border-left:3px solid #A32D2D;border-radius:2px;">
                 ⚠ Inversión + Gasto supera el Salario. Revisa los datos — en la fase laboral no hay margen positivo.
             </div>
@@ -353,7 +354,7 @@
             <div class="sec-title">Fase de Retiro</div>
             <div class="row">
                 <label>Tasa de retiro anual (%)</label>
-                <input type="number" id="withdrawalRate" min="0" max="100" step="0.01" value="5.00" class="key-input">
+                <input type="number" id="withdrawalRate" min="0" max="100" step="0.5" value="3" class="key-input">
             </div>
             <div class="row" style="opacity:0.75">
                 <label style="font-style:italic">↳ Retirada mensual del patrimonio (€)</label>
@@ -361,11 +362,11 @@
             </div>
             <div class="row">
                 <label>Pensión pública mensual (€)</label>
-                <input type="number" id="pension" min="0" max="4000" step="100" value="1000">
+                <input type="number" id="pension" min="0" max="4000" step="100" value="1500">
             </div>
             <div class="row">
                 <label>Gasto mensual en retiro (€)</label>
-                <input type="number" id="retirementExpense" min="0" max="100000" step="50" value="2100">
+                <input type="number" id="retirementExpense" min="0" max="100000" step="100" value="2100">
             </div>
             <div class="row">
                 <label>
@@ -388,7 +389,7 @@
             </div>
             <div class="row">
                 <label>Rendimiento cuenta ahorro (%)</label>
-                <input type="number" id="savingsRate" min="0" max="10" step="0.01" value="2.00" class="savings-input">
+                <input type="number" id="savingsRate" min="0" max="10" step="0.5" value="2.00" class="savings-input">
             </div>
         </div>
 
@@ -403,7 +404,7 @@
                 <span class="val" id="initialAnnualExpense">—</span>
             </div>
             <div class="row">
-                <label>Ahorro/déficit neto anual (salario−gasto) (€)</label>
+                <label>Ahorro/déficit neto anual (salario−inversión−gasto) (€)</label>
                 <span class="val" id="annualSavings">—</span>
             </div>
             <div class="row">
@@ -545,7 +546,7 @@
 
     <div class="sec">
       <div class="sec-title">Gastos</div>
-      <div class="row"><label>Gasto mensual actual (€)</label><input type="number" id="d-expense" min="0" max="20000" step="50" value="2100"></div>
+      <div class="row"><label>Gasto mensual actual (€)</label><input type="number" id="d-expense" min="0" max="20000" step="100" value="2100"></div>
     </div>
   </div>
 
@@ -663,7 +664,15 @@
         const annualReturnInitial = initialWealth * returnRate;
         const annualFlowNet       = annualSalary - annualExpense - annualInvestment;
 
-        $('incomeWarning').style.display = (monthlyInvestment + monthlyExpense > monthlySalary) ? 'block' : 'none';
+        const monthlySurplus = monthlySalary - monthlyInvestment - monthlyExpense;
+        if (monthlySurplus > 0) {
+            $('incomeSavings').textContent = `Ahorro mensual en este periodo: ${fmtE2(monthlySurplus)}`;
+            $('incomeSavings').style.display = 'block';
+            $('incomeWarning').style.display = 'none';
+        } else {
+            $('incomeSavings').style.display = 'none';
+            $('incomeWarning').style.display = monthlySurplus < 0 ? 'block' : 'none';
+        }
         const wdRatePct           = (annualExpense / Math.max(1, initialWealth)) * 100;
 
         $('annualReturn').textContent                = fmtE2(annualReturnInitial);
@@ -842,8 +851,8 @@
         else         { a0El.textContent = '> ' + timeHorizon + ' años'; a0El.className = 'mval good'; }
 
         renderChart(simData, age, retireAge, timeHorizon);
-        renderInsight(age, retireAge, timeHorizon, initialWealth, annualReturnInitial, annualExpense, annualSalary, annualPension, returnRate, inflationRate, savingsRate, wealthAtRetire, savingsAtRetire, sustYears, finalTotal, ageZero);
-        renderPhases(age, retireAge, timeHorizon, annualSalary, annualExpense, annualPension, wealthAtRetire, savingsAtRetire, sustYears, ageZero, inflationRate, savingsRate, finalTotal);
+        renderInsight(age, retireAge, timeHorizon, initialWealth, annualReturnInitial, annualExpense, annualSalary, annualPension, returnRate, inflationRate, savingsRate, wealthAtRetire, savingsAtRetire, sustYears, finalTotal, ageZero, annualInvestment);
+        renderPhases(age, retireAge, timeHorizon, annualSalary, annualExpense, annualPension, wealthAtRetire, savingsAtRetire, sustYears, ageZero, inflationRate, savingsRate, finalTotal, annualInvestment);
         renderScenarios(age, retireAge, timeHorizon, initialWealth, returnRate, inflationRate, savingsRate, annualSalary, annualExpense, annualPension, annualRetirementExp);
     }
 
@@ -945,19 +954,22 @@
     }
 
     /* ─── ANÁLISIS DINÁMICO ─── */
-    function renderInsight(age, retireAge, horizon, wealth, annualReturn, annualExpense, annualSalary, pension, returnRate, inflationRate, savingsRate, wealthAtRetire, savingsAtRetire, sustYears, finalTotal, ageZero) {
+    function renderInsight(age, retireAge, horizon, wealth, annualReturn, annualExpense, annualSalary, pension, returnRate, inflationRate, savingsRate, wealthAtRetire, savingsAtRetire, sustYears, finalTotal, ageZero, annualInvestment) {
         const margin     = (returnRate - inflationRate) * 100;
-        const flow       = annualSalary - annualExpense;
+        const flow       = annualSalary - annualExpense - annualInvestment;
         let html = '';
 
         if (retireAge > age) {
             html += `<strong>Fase laboral (${retireAge - age} años):</strong> `;
+            if (annualInvestment > 0) {
+                html += `aportas <strong>${fmtE(annualInvestment)}/año</strong> directamente a cartera. `;
+            }
             if (flow > 0) {
-                html += `ahorras <strong style="color:#0F6E56">${fmtE(flow)}/año</strong> que van a tu cuenta de ahorro (${(savingsRate * 100).toFixed(1)}%). Al retirarte tendrás <strong>${fmtE(savingsAtRetire)}</strong> en ahorro y <strong>${fmtE(wealthAtRetire)}</strong> en cartera invertida.`;
+                html += `Además ahorras <strong style="color:#0F6E56">${fmtE(flow)}/año</strong> en cuenta de ahorro (${(savingsRate * 100).toFixed(1)}%). Al retirarte tendrás <strong>${fmtE(savingsAtRetire)}</strong> en ahorro y <strong>${fmtE(wealthAtRetire)}</strong> en cartera.`;
             } else if (flow < 0) {
-                html += `el gasto supera al salario en <strong style="color:#A32D2D">${fmtE(Math.abs(flow))}/año</strong>. Ese déficit se cubre primero del ahorro y luego del patrimonio invertido.`;
+                html += `El gasto supera al salario en <strong style="color:#A32D2D">${fmtE(Math.abs(flow))}/año</strong> tras la aportación a cartera. Ese déficit se cubre primero del ahorro y luego del patrimonio.`;
             } else {
-                html += 'salario y gastos se compensan. El patrimonio crece solo por rendimientos.';
+                html += `${annualInvestment > 0 ? 'El' : 'Salario y gastos se compensan. El'} patrimonio crece por rendimientos${annualInvestment > 0 ? ' y aportaciones mensuales' : ' únicamente'}. Al retirarte: <strong>${fmtE(wealthAtRetire)}</strong> en cartera.`;
             }
             html += '<br><br>';
         }
@@ -987,19 +999,19 @@
     }
 
     /* ─── FASES ─── */
-    function renderPhases(age, retireAge, horizon, annualSalary, annualExpense, pension, wealthAtRetire, savingsAtRetire, sustYears, ageZero, inflationRate, savingsRate, finalTotal) {
+    function renderPhases(age, retireAge, horizon, annualSalary, annualExpense, pension, wealthAtRetire, savingsAtRetire, sustYears, ageZero, inflationRate, savingsRate, finalTotal, annualInvestment) {
         const phases = [];
-        const flow = annualSalary - annualExpense;
+        const flow = annualSalary - annualExpense - annualInvestment;
 
         if (retireAge > age) {
-            phases.push({
-                color: flow >= 0 ? 'dot-blue' : 'dot-amber',
-                text: `<strong>Fase laboral — ${age} a ${retireAge} años (${retireAge - age} años):</strong> ${
-                    flow >= 0
-                    ? `acumulas ${fmtE(flow)}/año en cuenta de ahorro al ${(savingsRate*100).toFixed(1)}%. Al retirarte: ${fmtE(wealthAtRetire)} en cartera + ${fmtE(savingsAtRetire)} en ahorro.`
-                    : `déficit de ${fmtE(Math.abs(flow))}/año cubierto del ahorro y/o patrimonio.`
-                }`
-            });
+            let phaseText = `<strong>Fase laboral — ${age} a ${retireAge} años (${retireAge - age} años):</strong> `;
+            if (annualInvestment > 0) phaseText += `aportas ${fmtE(annualInvestment)}/año a cartera. `;
+            phaseText += flow > 0
+                ? `Ahorras ${fmtE(flow)}/año en cuenta de ahorro al ${(savingsRate*100).toFixed(1)}%. Al retirarte: ${fmtE(wealthAtRetire)} en cartera + ${fmtE(savingsAtRetire)} en ahorro.`
+                : flow < 0
+                ? `Déficit de ${fmtE(Math.abs(flow))}/año cubierto del ahorro y/o patrimonio.`
+                : `Sin margen adicional para ahorro. Al retirarte: ${fmtE(wealthAtRetire)} en cartera.`;
+            phases.push({ color: flow >= 0 ? 'dot-blue' : 'dot-amber', text: phaseText });
         }
 
         if (retireAge < 67 && horizon > retireAge) {
